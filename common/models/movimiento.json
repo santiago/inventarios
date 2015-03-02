@@ -1,0 +1,24 @@
+{
+  "name": "movimiento",
+  "plural": "movimientos",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "properties": {
+    "insumoId": {
+      "type": "string",
+      "required": true
+    },
+    "movimiento": {
+      "type": "number",
+      "required": true
+    },
+    "fecha": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

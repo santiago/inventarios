@@ -1,0 +1,30 @@
+{
+  "name": "insumo",
+  "plural": "insumos",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "properties": {
+    "nombre": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "marca": {
+      "type": "string"
+    },
+    "unidad": {
+      "type": "string"
+    },
+    "costo": {
+      "type": "number"
+    },
+    "cantidad": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

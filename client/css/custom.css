@@ -1,0 +1,15 @@
+.input-group {
+	display: block;
+}
+
+#inventarios table .ui-icon {
+	display: block;
+}
+
+#movimientos .cantidad {
+	margin-left: 10px;
+}
+
+#movimientos .cantidad input {
+	width: 87px;
+}
