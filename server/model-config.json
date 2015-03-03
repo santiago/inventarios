@@ -26,10 +26,6 @@
     "dataSource": "db",
     "public": false
   },
-  "inventario": {
-    "dataSource": "mongo",
-    "public": true
-  },
   "insumo": {
     "dataSource": "mongo",
     "public": true

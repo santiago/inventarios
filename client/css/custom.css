@@ -13,3 +13,7 @@
 #movimientos .cantidad input {
 	width: 87px;
 }
+
+.layout {
+	display: none;
+}
