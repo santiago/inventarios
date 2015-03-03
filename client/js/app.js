@@ -101,7 +101,7 @@
   InsumosView.prototype.render = function(cb) {
     var $layout = $('#inventarios table tr.layout').clone();
     $layout.removeClass('layout');
-    this.$el.find('tr:not(.layout)').remove();
+    this.$el.find('tbody tr:not(.layout)').remove();
     this.get(function _render(data) {
       cb && cb(data);
       data.forEach(function(r) {
