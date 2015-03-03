@@ -5,15 +5,29 @@
   }
 
   function MovimientosView() {
+    var view = this;
     this.id = 'movimientos';
     this.$el = $('#'+this.id);
 
+    var cambio = this.__cambio = '+';
+    this.__insumoId = '';
+
+    // Radios in Movimientos
+    $('.i-checks').iCheck({
+      checkboxClass: 'icheckbox_square-green',
+      radioClass: 'iradio_square-green'
+    });
+
+    $('.i-checks').on('ifChecked', function(e) {
+      cambio = $(this).find('input').val();
+    });
+
     // Agregar movimiento en click a OK
-    $(this.id+' button').click(function(e) {
+    this.$el.find('button').click(function(e) {
       e.preventDefault();
       var data = {
-        insumoId: $('.chosen-select').chosen(),
-        movimiento: parseFloat($('.cantidad input').val())
+        insumoId: view.__insumoId,
+        movimiento: parseFloat(cambio+$('.cantidad input').val())
       };
 
       if(!data.insumoId) { console.error('falta insumoId'); return; }
@@ -28,26 +42,30 @@
 
   MovimientosView.prototype.create = function(data, cb) {
     var view = this;
-    $.post('/movimientos', data, function(res) {
-      view.$el.trigger('create', [res]);
+    $.post('/api/movimientos', data, function(res) {
+      view.$el.trigger('create');
       cb && cb(res);
     });
   };
 
   MovimientosView.prototype.renderInsumos = function(data) {
+    var view = this;
     var $currentSelect = this.$el.find('select');
     var $newSelect = $currentSelect.clone();
-    console.log($newSelect.get(0));
-    $currentSelect = $currentSelect.replaceWith($newSelect);
-    $currentSelect = null;
     data.forEach(function(d) {
       var $option = $('<option/>');
       $option.text(d.nombre);
       $option.attr('value', d.id);
-      console.log($option.get(0));
       $newSelect.append($option);
     });
+    $currentSelect = $currentSelect.replaceWith($newSelect);
+    $currentSelect = null;
+    this.$el.find('.chosen-container').remove();
     $newSelect.chosen({ width: '95%' });
+    $newSelect.chosen().change(function(e, d) {
+      view.__insumoId = d.selected;
+    });
+
   };
 
   MovimientosView.prototype.on = __on;
@@ -83,13 +101,14 @@
   InsumosView.prototype.render = function(cb) {
     var $layout = $('#inventarios table tr.layout').clone();
     $layout.removeClass('layout');
+    this.$el.find('tr:not(.layout)').remove();
     this.get(function _render(data) {
       cb && cb(data);
       data.forEach(function(r) {
         var $row = $layout.clone();
         $row.find('td:eq(0)').text(r.nombre);
         $row.find('td:eq(1)').text(r.cantidad);
-        $row.find('td:eq(2)').text('$'+(r.cantidad * r.costo));
+        $row.find('td:eq(2)').text(numeral(r.cantidad * r.costo).format('$0,0.00'));
         $('#inventarios table').append($row);
       });
     });
@@ -115,27 +134,24 @@
 
   // Start UI application
   (function App() {
-    // Chosen select in Movimientos
-    // $('.chosen-select').chosen({ width: '95%' });
-
-    // Radios in Movimientos
-    $('.i-checks').iCheck({
-      checkboxClass: 'icheckbox_square-green',
-      radioClass: 'iradio_square-green'
-    });
-
     var movimientosView = new MovimientosView();
     movimientosView.on('create', function() {
-      console.log('created');
+      renderInsumos();
     });
 
     var insumosView = new InsumosView();
-    insumosView.render(function(data) {
-      movimientosView.renderInsumos(data);
+
+    renderInsumos();
+
+    insumosView.on('create', function(e) {
+      renderInsumos();
     });
-    insumosView.on('create', function(e, d) {
-      movimientosView.renderInsumos(d);
-    });
+
+    function renderInsumos() {
+      insumosView.render(function(data) {
+        movimientosView.renderInsumos(data);
+      });
+    }
   })();
 
 
