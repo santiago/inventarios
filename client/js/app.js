@@ -1,13 +1,13 @@
 (function() {
 
   function __on(channel, cb) {
-    this.$el.on(channel, cb);
+    this.$el().on(channel, cb);
   }
 
   function MovimientosView() {
     var view = this;
     this.id = 'movimientos';
-    this.$el = $('#'+this.id);
+    this.$el = function() { return $('#'+this.id); }
 
     var cambio = this.__cambio = '+';
     this.__insumoId = '';
@@ -23,7 +23,7 @@
     });
 
     // Agregar movimiento en click a OK
-    this.$el.find('button').click(function(e) {
+    this.$el().find('button').click(function(e) {
       e.preventDefault();
       var data = {
         insumoId: view.__insumoId,
@@ -48,34 +48,39 @@
     });
   };
 
+  MovimientosView.prototype.render = function(cb) {
+    var view = this;
+    Insumos.get(function _render(data) {
+      cb(data);
+    });
+  };
+
   MovimientosView.prototype.renderInsumos = function(data) {
     var view = this;
-    var $currentSelect = this.$el.find('select');
-    var $newSelect = $currentSelect.clone();
-    data.forEach(function(d) {
-      var $option = $('<option/>');
-      $option.text(d.nombre);
-      $option.attr('value', d.id);
-      $newSelect.append($option);
-    });
-    $currentSelect = $currentSelect.replaceWith($newSelect);
-    $currentSelect = null;
-    this.$el.find('.chosen-container').remove();
-    $newSelect.chosen({ width: '95%' });
-    $newSelect.chosen().change(function(e, d) {
+
+    if(data) {
+      dust.render('movimientos', { insumos: data }, function(err, result) {
+        view.$el().empty();
+        view.$el().append($(result).html());
+      });
+    }
+
+    var $select = this.$el().find('select');
+    $select.chosen({ width: '95%' });
+    $select.chosen().change(function(e, d) {
       view.__insumoId = d.selected;
     });
-
   };
 
   MovimientosView.prototype.on = __on;
 
   function InsumosView() {
-    this.id = 'inventarios';
-    this.$el = $('#inventarios');
+    this.id = 'insumos';
+    this.$el = function() { return $('#insumos') };
 
     var view = this;
     this.__data = [];
+    // Modal Nuevo Insumo
     $('#modal-form form button').click(function(e) {
       e.preventDefault();
       var $form = $(this).closest('form');
@@ -90,8 +95,8 @@
       if(!data.unidad) { return; }
       if(!data.costo) { return; }
 
-      view.create(data, function() {
-
+      Insumos.create(data, function(res) {
+        view.$el().trigger('create', [res]);
       });
     });
   }
@@ -99,60 +104,60 @@
   InsumosView.prototype.on = __on;
 
   InsumosView.prototype.render = function(cb) {
-    var $layout = $('#inventarios table tr.layout').clone();
-    $layout.removeClass('layout');
-    this.$el.find('tbody tr:not(.layout)').remove();
-    this.get(function _render(data) {
-      cb && cb(data);
-      data.forEach(function(r) {
-        var $row = $layout.clone();
-        $row.find('td:eq(0)').text(r.nombre);
-        $row.find('td:eq(1)').text(r.cantidad);
-        $row.find('td:eq(2)').text(numeral(r.cantidad * r.costo).format('$0,0.00'));
-        $('#inventarios table').append($row);
+    var view = this;
+    Insumos.get(function _render(data) {
+      dust.render('insumos', { insumos: data, total: totalInsumo(data) }, function(err, result) {
+        view.$el().empty();
+        view.$el().append($(result).html());
       });
+      cb(data);
     });
   };
 
-  InsumosView.prototype.get = function(cb) {
-    var view = this;
-    $.getJSON('/api/insumos', function(res) {
-      view.__data = res;
-      cb && cb(res);
-    });
+  function Insumos() {}
+
+  Insumos.get = function(cb) {
+    $.getJSON('/api/insumos', cb);
   };
 
-  InsumosView.prototype.create = function(data, cb) {
-    var view = this;
-    $.post('/api/insumos', data, function(res) {
-      view.$el.trigger('create', [res]);
-      cb && cb(res);
-    });
+  Insumos.create = function(data, cb) {
+    $.post('/api/insumos', data, cb);
   };
-  InsumosView.prototype.update = function() {};
-  InsumosView.prototype.delete = function() {};
+
+  Insumos.update = function() {
+  };
+
+  Insumos.delete = function() {};
+
+  function totalInsumo(data) {
+    return function(chunk, context, bodies, params) {
+      var ctx = context.stack.index; // Should I be doing this?
+      var r = data[ctx];
+      return numeral(r.cantidad * r.costo).format('$0,0.00')
+    };
+  }
 
   // Start UI application
   (function App() {
-    var movimientosView = new MovimientosView();
-    movimientosView.on('create', function() {
-      renderInsumos();
+    var movimientosView, insumosView;
+
+    Insumos.get(function(data) {
+      dust.render('inventarios', { insumos: data, total: totalInsumo(data) }, function(err, result) {
+        $('[main-view]').append(result);
+
+        insumosView = new InsumosView();
+        insumosView.on('create', function(e) { refresh(); });
+
+        movimientosView = new MovimientosView();
+        movimientosView.renderInsumos();
+        movimientosView.on('create', function() { refresh(); });
+      });
     });
 
-    var insumosView = new InsumosView();
-
-    renderInsumos();
-
-    insumosView.on('create', function(e) {
-      renderInsumos();
-    });
-
-    function renderInsumos() {
+    function refresh() {
       insumosView.render(function(data) {
         movimientosView.renderInsumos(data);
       });
     }
   })();
-
-
 })();

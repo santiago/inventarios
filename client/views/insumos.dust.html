@@ -1,0 +1,44 @@
+<div class="col-md-6" id="insumos">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5>Inventario</h5>
+      <div class="ibox-tools">
+      </div>
+    </div>
+    <div class="ibox-content">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Insumo</th>
+            <th>Cantidad</th>
+            <th>Costo</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="insumo layout">
+            <td>Chocolate Negro 70%</td>
+            <td>35 gramos</td>
+            <td>$3,500.00</td>
+            <td><a data-toggle="modal" href="#edit-insumo-modal" class="edit"><span class="ui-icon ui-icon-pencil"></span></a></td>
+            <td><a data-toggle="modal" href="#delete-insumo-modal" class="delete"><span class="ui-icon ui-icon-trash"></span></a></td>
+          </tr>
+          {#insumos}
+          <tr>
+            <td>{.nombre}</td>
+            <td>{cantidad} {unidad}</td>
+            <td>{#total}{.}{/total}</td>
+            <td><a data-toggle="modal" href="#edit-insumo-modal" class="edit"><span class="ui-icon ui-icon-pencil"></span></a></td>
+            <td><a data-toggle="modal" href="#delete-insumo-modal" class="delete"><span class="ui-icon ui-icon-trash"></span></a></td>
+          </tr>
+          {/insumos}
+        </tbody>
+      </table>
+      <div class="hr-line-dashed"></div>
+      <div class="text-center">
+        <a data-toggle="modal" class="btn btn-primary" href="#modal-form">Nuevo Insumo</a>
+      </div>
+    </div>
+  </div>
+</div>

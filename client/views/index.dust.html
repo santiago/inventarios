@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santa Tentación</title>
+    <title>INSPINIA | Main view</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
@@ -29,7 +29,90 @@
       </nav>
       <div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom"></div>
-        <div main-view class="wrapper wrapper-content animated fadeInRight">
+        <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="row">
+            <div class="col-lg-6" id="movimientos">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h5>Movimientos</h5>
+                  <div class="ibox-tools">
+                  </div>
+                </div>
+                <div class="ibox-content">
+                  <form>
+                    <div class="form-group">
+                      <!-- label class="font-normal"></label -->
+                      <div class="input-group">
+                        <select data-placeholder="Seleccionar insumo..." class="chosen-select" style="width:350px;"
+                        tabindex="2">
+                          <option value="">Seleccionar insumo...</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="radio-inline i-checks">
+                        <label class="">
+                          <div class="iradio_square-green" style="position: relative;">
+                            <input type="radio" value="+" name="a" style="position: absolute; opacity: 0;">
+                            <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins>
+                          </div>
+                          <i></i>Entra
+                        </label>
+                      </div>
+                      <div class="radio-inline i-checks">
+                        <label class="">
+                          <div class="iradio_square-green" style="position: relative;">
+                            <input type="radio" value="-" name="a" style="position: absolute; opacity: 0;">
+                            <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins>
+                          </div>
+                          <i></i>Sale
+                        </label>
+                      </div>
+                      <div class="inline cantidad">
+                        <input type="cantidad" placeholder="Cantidad" class="form-control">
+                      </div>
+                    </div>
+                    <button class="btn btn-white">OK</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" id="inventarios">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h5>Inventario</h5>
+                  <div class="ibox-tools">
+                  </div>
+                </div>
+                <div class="ibox-content">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Insumo</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="insumo layout">
+                        <td>Chocolate Negro 70%</td>
+                        <td>35 gramos</td>
+                        <td>$3,500.00</td>
+                        <td><a data-toggle="modal" href="#edit-insumo-modal" class="edit"><span class="ui-icon ui-icon-pencil"></span></a></td>
+                        <td><a data-toggle="modal" href="#delete-insumo-modal" class="delete"><span class="ui-icon ui-icon-trash"></span></a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="hr-line-dashed"></div>
+                  <div class="text-center">
+                    <a data-toggle="modal" class="btn btn-primary" href="#modal-form">Nuevo Insumo</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="footer"></div>
       </div>
@@ -155,8 +238,6 @@
     <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="js/bower_components/dustjs-linkedin/dist/dust-full.min.js"></script>
-    <!-- Dust Templates -->
-    <script src="js/templates.js"></script>
     <!-- Custom and plugin javascript -->
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
